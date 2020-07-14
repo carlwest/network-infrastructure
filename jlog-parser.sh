@@ -18,7 +18,7 @@
 #  IP addresses and destination ports
 #
 #  Created by cwest@optum.com
-#  last modifed - 200713
+#  last modifed - 200714
 #
 ###################################################################################
 
@@ -64,7 +64,7 @@ usage(){
 cleanup(){
     if [ -f "$tmp" ]; then
         echo -n "Cleaning up ... "
-        cat $tmp | awk '!a[$0]++' | awk -F ',' -v OFS=',' '{gsub("^1$","icmp",$3)}1' | awk -F ',' -v OFS=',' '{gsub("^6$","tcp",$3)}1' | awk -F ',' -v OFS=',' '{gsub("^17$","udp",$3)}1' > $out && rm $tmp
+        cat $tmp | awk '!a[$0]++' | awk -F ',' -v OFS=',' '{gsub("^1$","icmp",$3)}1' | awk -F ',' -v OFS=',' '{gsub("^6$","tcp",$3)}1' | awk -F ',' -v OFS=',' '{gsub("^17$","udp",$3)}1' >> $out && rm $tmp
         echo -e "COMPLETE"        
     fi
 }
@@ -125,6 +125,10 @@ for file in "${file[@]}"; do
     if [ "$counter" = 1 ] && [ "$append" != 1 ]; then       
         echo -n "Creating new output file ... "
         echo -e "Device,Src IP,Protocol,Dst IP,Dst Port" > $tmp
+        if [ -f "$out" ]; then
+            rm $out
+        fi
+        touch $out
         echo -e "DONE"
     fi
     echo -n "Processing log file $counter ... "
